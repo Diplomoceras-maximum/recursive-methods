@@ -58,3 +58,70 @@ alert(power(2, 3)); // 8 (2 x 2 x 2)
 // 3. power(2, 2) = 2 * power(2, 1)
 // 4. power(2, 1) = 2
 // Recursion reduces a function call to a simpler one, and so on until the result is obvious
+
+// ##################################################
+// How do recursive calls work?
+// ##################################################
+
+// The informationabout the proces of execution of a running function is stored in its
+// execution context.
+
+// The execution content is the interal data structure that contains details about the
+// execution of a function: where the control flow is now, the current variables, the
+// value of "this", and other details.
+
+// One function call has exactly one execution context associated with it.
+// When a function makes a nested call, the following happens:
+// #. The current function is paused.
+// #. The execution context associated with it is remembered in a special data structure
+// called execution context stack.
+// #. The nested call executes.
+// #. After it ends, the old execution context is retrieved from the stack, and the
+// outer function is resumed from where it stopped.
+
+// Using power(2, 3) as an example:
+
+// power(2, 3):
+// In the beginning of the call power(2, 3) the execution context will store variables
+// x = 2, n = 3, the execution flow is at line 1 of the function.
+// This can be written as Context: { x: 2, n: 3, at line 1} call: power(2, 3).
+// The condition n == 1 is false, so the flow continues into the second branch of if.
+// The context of the flow is now: Context { x: 2, n: 3, at line 5} call: power(2, 3).
+// To calculate x * power(x, n - 1), a subcall of power with the new arguments power(2, 2) is made.
+
+// power(2, 2):
+// To do a nested call, JS remembers the current execution context in the execution content
+// stack.
+// Here power is called again, but the process is the same as before: The current context is
+// “remembered” on top of the stack. The new context is created for the subcall. When the subcall
+// is finished – the previous context is popped from the stack, and its execution continues.
+// The context stack now looks like this:
+// Context: { x: 2, n: 2, at line 1 } power(2, 2)
+// Context: { x: 2, n: 3, at line 5 } power(2, 3)
+// The new current execution context is on top, and previous remembered contexts are below.
+// When the subcall is finished – it is easy to resume the previous context, because it keeps
+// both variables and the exact place of the code where it stopped.
+
+// power(2, 1):
+// The process repeats: a new subcall is made at line 5, now with arguments x=2, n=1.
+// A new execution context is created, the previous one is pushed on top of the stack:
+// Context: { x: 2, n: 1, at line 1 } power(2, 1)
+// Context: { x: 2, n: 2, at line 5 } power(2, 2)
+// Context: { x: 2, n: 3, at line 5 } power(2, 3)
+// There are 2 old contexts now and 1 currently running for power(2, 1).
+
+// The exit:
+// During the execution of pow(2, 1), unlike before, the condition n == 1 is truthy, so the
+// first branch of if works.
+// There are no more nested calls, so the function finishes, returning 2.
+// As the function finishes, its execution context is not needed anymore, so it’s removed
+// from the memory. The previous one is restored off the top of the stack:
+// Context: { x: 2, n: 2, at line 5 } power(2, 2)
+// Context: { x: 2, n: 3, at line 5 } power(2, 3)
+// The execution of pow(2, 2) is resumed. It has the result of the subcall power(2, 1),
+// so it also can finish the evaluation of x * power(x, n - 1), returning 4. Then the
+// previous context is restored:
+// Context: { x: 2, n: 3, at line 5 } power(2, 3)
+// When it finishes, the result of power(2, 3) = 8.
+// The recursion depth in this case was: 3.
+// The recursion depth equals the maximal number of context in the stack.
