@@ -204,3 +204,89 @@ function sumSalaries(department) {
 }
 
 alert(sumSalaries(company)); // 7700
+
+// ##################################################
+// Recursive structures
+// ##################################################
+
+// A recursive (recursively-defined) data structure is a structure that replicates
+// itself in parts. Example from above, being:
+
+// A company department is:
+// #. Either an array of people.
+// #. Or an object with departments.
+
+// Another example, a Linked list, an alternative for arrays in some cases:
+
+// ##### Linked List #####
+
+// Imagine, you want to store an ordered list of objects. An array would be the
+// likely choice: let arr = [obj1, obj2, obj3];.
+
+// However, there is a problem with arrays. The "delete element" and "insert element"
+// operations are expensive.
+// For example, arr.unshift(obj) operation has to renumber all elements to make room for
+// a new obj, and if the array is big, it takes a long time. Same with arr.shift().
+
+// The only structural modifications that do not require mass-renumbering are those
+// that operate with the end of array: arr.push/pop. So an array can be quite slow
+// for big queues, when you have to work with the beginning.
+
+// If fast insertion/deletion are needed, there is another data structure: Linked Lists
+
+// The linked list element is recursively defined as an object with:
+// #. value
+// #. next property referencing the next linked list element or null if that's the end.
+
+// Linked list example:
+let list = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: {
+        value: 4,
+        next: null,
+      },
+    },
+  },
+};
+
+// Here you can see there are multiple objects, each one has the value and next
+// pointing to the neighbour.
+// The list variable is the first object in the chain, so following next pointers
+// from it you can reach any element.
+
+// The list can be easily split into multiple parts and later joined back:
+let secondList = list.next.next;
+list.next.next = null;
+// List: 1 next: 2 null
+// SecondList: 3 next: 4 null
+
+// To join:
+list.next.next = secondList; // List: 1 next: 2 next: 3 next: 4 nulls
+
+// Insert or remove items in any place:
+
+let linked = { value: 1 };
+linked.next = { value: 2 };
+linked.next.next = { value: 3 };
+linked.next.next.next = { value: 4 };
+
+// prepend the new value to the list
+linked = { value: "new item", next: list }; // List: "new item" next: 1 next: 2 next: 3 next: 4 null
+
+// To remove a value from the middle, change next of the previous one:
+linked.next = linked.next.next;
+
+// This made list.next jump over 1 to value 2. The value 1 is now excluded from the
+// chain. If it’s not stored anywhere else, it will be automatically removed from the
+// memory.
+
+// Unlike arrays, there’s no mass-renumbering, you can easily rearrange elements.
+
+// Lists are not always better than arrays. The main drawback is that you can’t easily
+// access an element by its number. In an array that’s easy: arr[n] is a direct
+// reference. But in the list you need to start from the first item and go next n times
+// to get the nth element.
