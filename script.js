@@ -125,3 +125,82 @@ alert(power(2, 3)); // 8 (2 x 2 x 2)
 // When it finishes, the result of power(2, 3) = 8.
 // The recursion depth in this case was: 3.
 // The recursion depth equals the maximal number of context in the stack.
+
+// ##################################################
+// Recursive traversals
+// ##################################################
+
+// Example:
+let company = {
+  sales: [
+    {
+      name: "John",
+      salary: 1000,
+    },
+    {
+      name: "Alice",
+      salary: 1600,
+    },
+  ],
+
+  development: {
+    sites: [
+      {
+        name: "Peter",
+        salary: 2000,
+      },
+      {
+        name: "Alex",
+        salary: 1800,
+      },
+    ],
+
+    internals: [
+      {
+        name: "Jack",
+        salary: 1300,
+      },
+    ],
+  },
+};
+
+// In this example, the company has departments:
+// #. A department may have an array of staff, for example: sales department has 2 employees.
+// #. Or a department may split into subdepartments, like development has two branches:
+// sites and internals, each has their own staff.
+// #. It is also possible that when a subdepartment grows, it devides into subsubdepartments
+// or teams.
+
+// What if we want a function to get the sum of all salaries? How is that done?
+
+// An iterative approach to this is not easy as the structure is not simple.
+// Too many loops and subloops would be needed (3 - 4 nested subloops), this becomes
+// ugly and hard to read.
+
+// Recursion is the better approach.
+// When the function gets a department to sum, there are two possible cases:
+// 1. Either its a "simple" deaprtment with an array of people - done in a single loop.
+// 2. Or it's an object with n subdepartments - then you need to make n recursive calls
+// to get the sum of each of the dubdepartments and combine the results.
+
+// The 1st case is the base of recursion, the trivial case, when you get an array.
+// The 2nd case when you get an object is the recursive step. A complex task is split
+// into subtasks for smaller departments, they may split again, but the split will eventually
+// finish at 1.
+
+// The algorithm:
+function sumSalaries(department) {
+  if (Array.isArray(department)) {
+    // case (1)
+    return department.reduce((prev, current) => prev + current.salary, 0); // sum the array
+  } else {
+    // case (2)
+    let sum = 0;
+    for (let subdepartment of Object.values(department)) {
+      sum += sumSalaries(subdepartment); // recursively call for subdepartments, sum the results
+    }
+    return sum;
+  }
+}
+
+alert(sumSalaries(company)); // 7700
