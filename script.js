@@ -24,7 +24,7 @@ function pow(x, n) {
   return result;
 }
 
-alert(pow(2, 3)); // 8 (2 x 2 x 2)
+//alert(pow(2, 3)); // 8 (2 x 2 x 2)
 
 // 2. Recursive thinking: simplify the task and call self:
 function power(x, n) {
@@ -35,7 +35,7 @@ function power(x, n) {
   }
 }
 
-alert(power(2, 3)); // 8 (2 x 2 x 2)
+//alert(power(2, 3)); // 8 (2 x 2 x 2)
 
 // The recursive variant is fundamentally different:
 
@@ -203,7 +203,7 @@ function sumSalaries(department) {
   }
 }
 
-alert(sumSalaries(company)); // 7700
+//alert(sumSalaries(company)); // 7700
 
 // ##################################################
 // Recursive structures
@@ -290,3 +290,102 @@ linked.next = linked.next.next;
 // access an element by its number. In an array that’s easy: arr[n] is a direct
 // reference. But in the list you need to start from the first item and go next n times
 // to get the nth element.
+
+// ##################################################
+// More examples:
+// ##################################################
+
+function countDown(n) {
+  for (let i = n; i > 0; i--) {
+    console.log(i);
+  }
+  console.log("Hooray!");
+}
+
+countDown(3);
+
+// Refactor into a recursive function
+
+function countDownRecursive(n) {
+  if (n <= 0) {
+    console.log("Hooray!");
+    return;
+  }
+  console.log(n);
+  countDownRecursive(n - 1);
+}
+
+countDownRecursive(3);
+
+// ##################################################
+
+function sumRange(n) {
+  let total = 0;
+  for (let i = n; i > 0; i--) {
+    total += i;
+  }
+  return total;
+}
+
+// Refactor into a recursive function
+
+function sumRangeRecursive(n, total = 0) {
+  if (n <= 0) {
+    return total;
+  }
+  return sumRangeRecursive(n - 1, total + n);
+}
+
+// If n = 3:
+// sumRangeRecursive(3, 0);
+// sumRangeRecursive(2, 3);
+// sumRangeRecursive(1, 5);
+// sumRangeRecursive(0, 6);
+// Answer: returns 6
+
+// ##################################################
+
+function printChildren(t) {
+  // . . .
+}
+
+// Refactor into a recursive function
+
+function printChildrenRecursive(t) {
+  if (t.children.length === 0) {
+    return;
+  }
+  t.children.forEach((child) => {
+    console.log(child.name);
+    printChildrenRecursive(child);
+  });
+}
+
+// printChildrenRecursive("John");
+//   printChildrenRecursive("Jim");
+//   return
+//   printChildrenRecursive("Zoe");
+//     printChildrenRecursive("Kyle");
+//     return
+//     printChildrenRecursive("Sophia");
+//     return
+//   return
+// return
+// Answer: returns "Jim", "Zoe", Kyle", "Sophia"
+
+const tree = {
+  name: "John",
+  children: [
+    {
+      name: "Jim",
+      children: [],
+    },
+    {
+      name: "Zoe",
+      children: [
+        { name: "Kyle", children: [] },
+        { name: "Sophia", children: [] },
+      ],
+    },
+  ],
+};
